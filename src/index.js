@@ -4,31 +4,39 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
-class Square extends React.Component {
-  /* we want the square component to "remember" that it got clicked 
-  so for it to remember things, we use "state". We can store the current
-  value of the Square in this.state and change it when the Square is clicked. */
-  constructor(props) {
-    super(props); /* always call super when defining the constructor of a subclass */
-    this.state = {
-      value: null,
-    };
-  }
-  render() {
-    return (
-      <button 
-        className="square" 
-        onClick={() => {this.setState({value: 'X'})}}>
-        {this.state.value /* display the current state value when clicked */}
-      </button>
-    );
-  }
+function Square(props) {
+  return (
+    <button className="square" onClick={props.onClick}>
+      {props.value}
+    </button>
+  );
 }
 
 class Board extends React.Component {
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      squares: Array(9).fill(null), /* you create an array of nine squares, but you fill it with nothing */
+      xIsNext: true,
+    };
+  }
+  
+  handleClick(i) {
+    const squares = this.state.squares.slice();
+    squares[i] = this.state.xIsNext ? 'X' : 'O' ;
+    this.setState({
+      squares: squares,
+      xIsNext: !this.state.xIsNext,
+    });
+  }
+
   renderSquare(i) {
     /* we are passing a prop called value to the Square */
-    return <Square value={i}/>;
+    return <Square 
+      value={this.state.squares[i]}
+      onClick={() => this.handleClick(i)}
+     />;
   }
 
   render() {
